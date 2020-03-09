@@ -1,5 +1,4 @@
-**.png
-**.json
-/node_modules/
-/.npm-global/
-/build/
+*.png
+*.json
+.npm-global/
+build/contracts
