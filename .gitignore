@@ -3,3 +3,5 @@
 .npm-global/
 node_modules/
 build/contracts/
+build/contracts/Election.json
+build/contracts/Migrations.json
