@@ -1,3 +1,9 @@
+window.addEventListener('load', async () => {
+try {
+           await ethereum.enable();
+       } catch (error) {}
+});
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -112,13 +118,15 @@ App = {
   castVote: function() {
     var candidateId = $('#candidatesSelect').val();
     App.contracts.Election.deployed().then(function(instance) {
-      return instance.vote(candidateId, { from: App.account });
+      //return instance.vote(candidateId, { from: App.account });
+      return instance.vote(candidateId, { from: web3.eth.accounts[1] });
     }).then(function(result) {
       // Wait for votes to update
       $("#content").hide();
       $("#loader").show();
     }).catch(function(err) {
       console.error(err);
+      console.log(candidateId);
     });
   }
 };
@@ -128,3 +136,5 @@ $(function() {
     App.init();
   });
 });
+
+
