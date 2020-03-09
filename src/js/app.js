@@ -1,7 +1,7 @@
 App = {
   web3Provider: null,
   contracts: {},
-  account: '0x0',
+  account: '0x401De796EDEea8E5a356516684E195B7b740487D',
   hasVoted: false,
 
   init: function() {
@@ -16,7 +16,8 @@ App = {
       web3 = new Web3(web3.currentProvider);
     } else {
       // Specify default instance if no web3 instance provided
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      //App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      App.web3Provider = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
       web3 = new Web3(App.web3Provider);
     }
     return App.initContract();
@@ -24,8 +25,9 @@ App = {
 
   initContract: function() {
     $.getJSON("Election.json", function(election) {
+      var ElectionArtifact = election;
       // Instantiate a new truffle contract from the artifact
-      App.contracts.Election = TruffleContract(election);
+      App.contracts.Election = TruffleContract(ElectionArtifact);
       // Connect provider to interact with contract
       App.contracts.Election.setProvider(App.web3Provider);
 
@@ -61,12 +63,12 @@ App = {
     content.hide();
 
     // Load account data
-    web3.eth.getCoinbase(function(err, account) {
-      if (err === null) {
-        App.account = account;
-        $("#accountAddress").html("Your Account: " + account);
-      }
-    });
+    // web3.eth.getCoinbase(function(err, account) {
+    //   if (err === null) {
+    //     App.account = account;
+    //     $("#accountAddress").html("Your Account: " + account);
+    //   }
+    // });
 
     // Load contract data
     App.contracts.Election.deployed().then(function(instance) {
