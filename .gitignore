@@ -1,2 +1,4 @@
 *.png
+*.json
 node_modules/
+.npm-global/
