@@ -1,13 +1,14 @@
-window.addEventListener('load', async () => {
-try {
-           await ethereum.enable();
-       } catch (error) {}
-});
+// window.addEventListener('load', async () => {
+// try {
+//            await ethereum.enable();
+//        } catch (error) {}
+// });
 
 App = {
   web3Provider: null,
   contracts: {},
-  account: '0x401De796EDEea8E5a356516684E195B7b740487D',
+  account: '0x0',
+  //account: '0x401De796EDEea8E5a356516684E195B7b740487D',
   hasVoted: false,
 
   init: function() {
@@ -25,6 +26,7 @@ App = {
       //App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
       App.web3Provider = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
       web3 = new Web3(App.web3Provider);
+      App.account = web3.currentProvider.selectedAddress;
     }
     return App.initContract();
   },
@@ -36,7 +38,7 @@ App = {
       App.contracts.Election = TruffleContract(ElectionArtifact);
       // Connect provider to interact with contract
       App.contracts.Election.setProvider(App.web3Provider);
-
+      //App.account = web3.currentProvider.selectedAddress;
       App.listenForEvents();
 
       return App.render();
@@ -69,6 +71,7 @@ App = {
     content.hide();
 
     // Load account data
+    
     // web3.eth.getCoinbase(function(err, account) {
     //   if (err === null) {
     //     App.account = account;
@@ -112,21 +115,22 @@ App = {
       content.show();
     }).catch(function(error) {
       console.warn(error);
+      console.log(App.account);
     });
   },
 
   castVote: function() {
     var candidateId = $('#candidatesSelect').val();
+    App.account = web3.currentProvider.selectedAddress;
     App.contracts.Election.deployed().then(function(instance) {
-      //return instance.vote(candidateId, { from: App.account });
-      return instance.vote(candidateId, { from: web3.eth.accounts[1] });
+      return instance.vote(candidateId, { from: App.account });
+      //return instance.vote(candidateId, { from: web3.eth.accounts[1] });
     }).then(function(result) {
       // Wait for votes to update
       $("#content").hide();
       $("#loader").show();
     }).catch(function(err) {
       console.error(err);
-      console.log(candidateId);
     });
   }
 };
