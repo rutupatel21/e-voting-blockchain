@@ -18,14 +18,18 @@ contract Election {
 
 	//store candidate using mapping
 	mapping(uint => Candidate) public candidates;
+
 	//store accounts that have voted
-	mapping (address => bool) public voters;
 	
-
+	mapping (address => bool) public voters;
+	//timestamp for closing time
+	
+	uint256 public closingTime = 1584655200;
 	//count candidates
+	
 	uint public candidateCount;
-
 	//voted event
+	
 	event votedEvent(uint _candidateId);
 	
 	function addCandidate (string memory _name) private {
@@ -33,8 +37,12 @@ contract Election {
 		candidates[candidateCount] = Candidate(candidateCount, _name, 0);
 	}
 
+	function deadline() public view returns (bool) {
+    	return now < closingTime;
+	}
+
 	function vote (uint _candidateId) public {
-		// to check that the person has not voted before
+		require(deadline());
 		require(!voters[msg.sender]);
 
 		// require a valid candidate
@@ -45,7 +53,7 @@ contract Election {
 		
 		//updating vote count
 		candidates[_candidateId].voteCount ++;
-
+    
 		//trigger voted event
 		emit votedEvent(_candidateId);
 	}
